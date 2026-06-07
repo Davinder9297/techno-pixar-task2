@@ -11,7 +11,8 @@ import {
   Shield,
   Mail,
   Calendar,
-  Loader2
+  Loader2,
+  Menu
 } from 'lucide-react';
 import { useDebounce } from '../hooks/useDebounce';
 import Sidebar from '../components/Sidebar';
@@ -23,6 +24,7 @@ import type { User } from '../types';
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
   // Filters & Pagination
   const [search, setSearch] = useState('');
@@ -107,7 +109,7 @@ const Dashboard: React.FC = () => {
           </div>
           
           <div className="flex flex-wrap items-center gap-3">
-            <div className="relative group">
+            <div className="relative group w-full md:w-auto">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
               <input
                 type="text"
@@ -119,7 +121,7 @@ const Dashboard: React.FC = () => {
             </div>
             
             <select
-              className="px-3 py-2 bg-slate-800/50 border border-slate-700 text-white text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer font-medium transition-all"
+              className="px-3 py-2 bg-slate-800/50 border border-slate-700 text-white text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer font-medium transition-all w-full md:w-auto"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -131,7 +133,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="w-full text-left min-w-[600px]">
             <thead>
               <tr className="bg-slate-800/30 text-slate-400 font-semibold uppercase tracking-widest text-[9px]">
                 <th className="px-6 py-4">User Details</th>
@@ -202,11 +204,11 @@ const Dashboard: React.FC = () => {
           </table>
         </div>
 
-        <div className="p-6 bg-slate-800/20 border-t border-slate-800 flex items-center justify-between">
-          <p className="text-slate-400 text-xs font-semibold">
+        <div className="p-6 bg-slate-800/20 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-slate-400 text-xs font-semibold order-2 sm:order-1">
             Showing <span className="text-white">{Math.min(limit, users.length)}</span> of <span className="text-white">{totalUsers}</span> users
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 order-1 sm:order-2">
             <button
               disabled={page === 1}
               onClick={() => setPage(p => p - 1)}
@@ -226,7 +228,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  ), [loading, users, search, statusFilter, page, totalUsers]);
+  ), [loading, users, search, statusFilter, page, totalUsers, user?.id, toggleStatus]);
 
   const profileContent = useMemo(() => (
     <div className="max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -314,14 +316,26 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] flex">
-      <Sidebar onLogout={handleOpenLogoutModal} />
+    <div className="min-h-screen bg-[#020617] flex flex-col lg:flex-row">
+      <Sidebar 
+        onLogout={handleOpenLogoutModal} 
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
+      />
       
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
         <header className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">{getTitle()}</h1>
-            <p className="text-slate-500 text-sm font-medium mt-0.5">Welcome back, {user?.name.split(' ')[0]}</p>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="p-2 bg-slate-900 border border-slate-800 rounded-xl text-slate-400 lg:hidden hover:text-white transition-colors"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{getTitle()}</h1>
+              <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">Welcome back, {user?.name.split(' ')[0]}</p>
+            </div>
           </div>
         </header>
 
