@@ -16,6 +16,7 @@ import {
 import { useDebounce } from '../hooks/useDebounce';
 import Sidebar from '../components/Sidebar';
 import ConfirmationModal from '../components/ConfirmationModal';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { useUsers, useToggleUserStatus } from '../hooks/useUserQueries';
 import type { User } from '../types';
 
@@ -142,9 +143,8 @@ const Dashboard: React.FC = () => {
             <tbody className="divide-y divide-slate-800/50">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center">
-                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-500 mb-2" />
-                    <p className="text-slate-400 text-xs font-semibold">Fetching latest data...</p>
+                  <td colSpan={4} className="px-6 py-20 text-center">
+                    <LoadingSpinner size={32} message="Syncing directory..." />
                   </td>
                 </tr>
               ) : users.length === 0 ? (
