@@ -11,7 +11,6 @@ import {
   Shield,
   Mail,
   Calendar,
-  Loader2,
   Menu
 } from 'lucide-react';
 import { useDebounce } from '../hooks/useDebounce';
