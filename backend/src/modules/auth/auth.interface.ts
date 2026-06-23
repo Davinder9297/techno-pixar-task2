@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
@@ -7,4 +7,10 @@ export interface IUser extends Document {
   role: 'Admin' | 'User';
   isActive: boolean;
   comparePassword(password: string): Promise<boolean>;
+}
+export interface ResetPassword extends Document {
+userId: any;
+resetPasswordToken: string;
+otp: string;
+expiresAt: Date;
 }

@@ -1,6 +1,7 @@
 import User from './auth.model';
-import { IUser } from './auth.interface';
+import { IUser, ResetPassword } from './auth.interface';
 import jwt from 'jsonwebtoken';
+import resetPasswordModel from './resetPassword.model';
 
 export class AuthService {
   static async register(userData: Partial<IUser>): Promise<IUser> {
@@ -54,11 +55,27 @@ export class AuthService {
     return await user.save();
   }
 
-  static generateToken(user: IUser): string {
+
+  static generateToken(user: IUser,expiresIn:any='1d'): string {
     return jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET || 'secret',
-      { expiresIn: '1d' }
+      { expiresIn: expiresIn }
     );
+  }
+    static async saveResetOtp(data: any): Promise<ResetPassword> {
+      const resetPassword= new resetPasswordModel(data)
+      return await resetPassword.save();
+  }
+    static async verifyOtpAndToken(data: any): Promise<ResetPassword> {
+      const {  token, otp } = data;
+      const resetPasswordRecord:any = await resetPasswordModel.findOne({ resetPasswordToken:token, otp });
+      if (!resetPasswordRecord ||  resetPasswordRecord.otp.toString() !== otp.toString()) {
+        throw new Error('Invalid OTP or token');
+      }
+      if(resetPasswordRecord.expiresAt < new Date()){
+       throw new Error('Expired OTP');
+      }
+        return resetPasswordRecord;
   }
 }

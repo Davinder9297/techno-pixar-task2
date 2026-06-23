@@ -113,6 +113,15 @@ const Login: React.FC = () => {
 
           <div className="text-center">
             <p className="text-slate-400 font-medium">
+             Forgot password?
+              <Link to="/forgot-password" className="text-blue-500 hover:text-blue-400 font-bold underline-offset-4 hover:underline transition-all">
+                Reset it
+              </Link>
+            </p>
+          </div>
+
+          <div className="text-center">
+            <p className="text-slate-400 font-medium">
               Don't have an account?{' '}
               <Link to="/register" className="text-blue-500 hover:text-blue-400 font-bold underline-offset-4 hover:underline transition-all">
                 Create one

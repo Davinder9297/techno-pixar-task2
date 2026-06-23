@@ -78,6 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [refetchMe]);
 
+
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     setUser(null);
